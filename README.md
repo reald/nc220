@@ -14,7 +14,7 @@ The standard username is admin and the password is admin, too. (Can be found und
 * Linux: When opening the live view window in your browser a plugin a served for download but it will not work. 
 
 ## Workaround
-There are a bunch of audio and video sources where you can try to obtain streams from. Most of them don´t work as expected but there are some working constellations.
+There are a bunch of audio and video sources where you can try to obtain streams from. Most of them do not work as expected but there are some working constellations.
 
 **Playing streams requires authentication!** Use your normal camera user account. **The _password_ must be _base64 encoded_.** In the examples here the standard password _admin_ (YWRtaW4= in base64) is used.
 
@@ -49,8 +49,10 @@ PORT     STATE SERVICE
 8080/tcp open  http-proxy
 ```
 
-Port 80 is used for configuration interface, streams are served at port 8080.
+Port 80 is used for configuration interface, streams are served at port 8080. What are the other ports for? Please report your experiences!
 
 # Firmware
 The camera itself runs under linux. Some GPL files can be downloaded at tplink http://www.tp-link.com/en/gpl-code.html?model=NC220 .
 
+# Contribute
+Please report your investigation results of this device!
