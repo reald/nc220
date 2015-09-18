@@ -1,7 +1,7 @@
 # TP-Link NC220
 Some more or less random stuff about TP-Link NC220 IP Camera
 
-The NC220 camera has a bad support for some browsers especially under linux. Some workarounds and observations will be collected here. It is not necessary to use any cloud service for accessing this camera. There is a good chance that some of these workarounds will work for the NC200 camera, too.
+The TP-Link NC220 and NC200 cameras have a bad support for some browsers especially under linux. Some workarounds and observations will be collected here. It is not necessary to use any cloud service for accessing this camera. My tests are done with the NC220 but there is a good chance that some of these workarounds will work for the NC200 camera, too.
 
 # Configure
 It is possible to make all configuration settings with any browser except motion detection (special plugin required). 
@@ -39,6 +39,12 @@ There are a bunch of audio and video sources where you can try to obtain streams
 # Getting Still Images
 * wget --user=admin --password=YWRtaW4= http://[ipofcamera]:8080/stream/snapshot.jpg
 
+# Configuring Motion Detection
+For configuring motion detection usually a special plugin is needed. This doesn´t work under linux so it was
+necessary to reverse engineer the protocol. The proof of concept configuration tool (written in Perl Tk) 
+can be found in the software folder. Please note: This is only a fast hacked proof of concept, there are still many
+issues to do (especially solve some timing issues).
+
 # Portscan
 ```
 PORT     STATE SERVICE
@@ -54,3 +60,7 @@ Port 80 is used for configuration interface, streams are served at port 8080.
 # Firmware
 The camera itself runs under linux. Some GPL files can be downloaded at tplink http://www.tp-link.com/en/gpl-code.html?model=NC220 .
 
+An (incomplete) analysis of the firmware image will be released here soon.
+
+# Contribute
+Feel free to share your investigations with your cameras.
