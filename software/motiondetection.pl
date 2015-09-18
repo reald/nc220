@@ -4,7 +4,7 @@
 # Configure motion detection for tp-link nc220 lan camera.
 # May work for nc200 camera, too.
 #
-# (c) Dennis Real 2015, v0.1
+# (c) Dennis Real 2015, v0.2
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ my $camera_admin_port = 80;
 my $camera_stream_port = 8080;
 my $camera_realm = "TP-Link IP-Camera";
 my $snapshotfile = "/tmp/nc220_snapshot.jpg";
-
+my $debug = 1;
 
 # constants ##################
 
@@ -64,8 +64,12 @@ my %fields = ();
 my %output_areas = ();
 my $sensitivity = 0;
 my $enablemotiondetect = 0;
+my $daynightmode = 0;
+my $daymodestarttime = 0;
+my $daymodeendtime = 0;
 my $connection_token = "";
 my $browserAdminConnection;
+
 # main #######################
 
 # fetch image from camera
@@ -82,9 +86,6 @@ my $canvas = $mainWindow->Canvas( -width=>$camera_pic_width,
                                 )->pack();
 #$canvas->configure(-scrollregion=> [$canvas->bbox('all')] );
 
-
-#my $img = $mainWindow->Photo( -data => $imagedata, -format=>'jpeg' );
-
 my $img = $mainWindow->Photo( -file => $snapshotfile );
 
 $canvas->createImage(0,0,
@@ -98,24 +99,46 @@ my $enable_btn = $mainWindow->Checkbutton(
   -text => 'Enable motion detection (must be enabled to update fields)',
   -variable => \$enablemotiondetect )->pack();
 
-my $frame1 = $mainWindow->Frame()->pack( );
+my $topframe = $mainWindow->Frame()->pack(-expand=>1);
 
-my $lable1 = $frame1->Label( -text=> 'Sensitivity:' )->pack();
+my $frame1 = $topframe->Frame()->grid(-row=>0, -column=>0);
 
-my $radio1 = $frame1->Radiobutton( -text => 'High',
+my $lable1 = $frame1->Label( -text=> 'Day/Night:' )->pack();
+
+my $radio1 = $frame1->Radiobutton( -text => 'Auto',
+   -value => 1,
+   -variable => \$daynightmode )->pack(-anchor=>'center');
+
+my $radio2 = $frame1->Radiobutton( -text => 'Day',
+   -value => 2,
+   -variable => \$daynightmode )->pack(-anchor=>'center');
+
+my $radio3 = $frame1->Radiobutton( -text => 'Night',
+   -value => 3,
+   -variable => \$daynightmode )->pack(-anchor=>'center');
+
+
+$frame1 = $topframe->Frame()->grid(-row=>0, -column=>1);
+
+$lable1 = $frame1->Label( -text=> 'Sensitivity:' )->pack();
+
+$radio1 = $frame1->Radiobutton( -text => 'High',
    -value => 3,
    -variable => \$sensitivity )->pack(-anchor => 'center');
 
-my $radio2 = $frame1->Radiobutton( -text => 'Mid',
+$radio2 = $frame1->Radiobutton( -text => 'Mid',
    -value => 2,
    -variable => \$sensitivity )->pack(-anchor => 'center');
 
-my $radio3 = $frame1->Radiobutton( -text => 'Low',
+$radio3 = $frame1->Radiobutton( -text => 'Low',
    -value => 1,
    -variable => \$sensitivity )->pack(-anchor => 'center');
 
+
+$frame1 = $topframe->Frame()->grid(-row=>2, -column=>0, -columnspan=>2);
+
 my $readimage_btn = $frame1->Button( -text => 'Get image',
-                                     -command => \&GuiUpdateImage, )->pack( -side=>'left' );
+                                     -command => \&GuiUpdateImage, )->pack(-side=>'left');
 
 my $disableall_btn = $frame1->Button( -text => 'Disable all', 
                                       -command => \&GuiDisableAllFields, )->pack( -side=>'left' );
@@ -129,8 +152,12 @@ my $readcamera_btn = $frame1->Button( -text => 'Read config from Camera',
 my $savecamera_btn = $frame1->Button( -text => 'Save config to Camera', 
                                      -command => \&CamSaveConfig, )->pack( -side=>'left' );
 
+
+my $rebootcamera_btn = $frame1->Button( -text => 'Reboot', 
+                                     -command => \&CamReboot, )->pack( -side=>'left' );
+
 my $quit_btn = $frame1->Button( -text => 'Quit', 
-                                -command => sub { exit(0); }, )->pack( -side=>'left' );;
+                                -command => sub { CamDisconnect(); exit(0); }, )->pack( -side=>'left' );;
 $mainWindow->bind('<KeyPress-q>' => sub { exit(0); });
 
 #GuiDrawLines();
@@ -189,8 +216,6 @@ sub GuiToggleField
 {
   my $param = shift;
   
-  # print $param;
-
   if ( $fields{$param} == 1 )
   {
     $canvas->itemconfigure($param, -fill=>"black", -stipple=>'gray75');
@@ -236,7 +261,6 @@ sub GuiRedrawFields
     my $item = "item$i";
     if ( $fields{$item} == 1 )
     {
-      # print ">>" . $item . " " . $fields{$item} . "\n";
       $canvas->itemconfigure($item, -fill=>"lightgreen", -stipple=>'transparent');
     }
     else
@@ -272,15 +296,7 @@ sub CamFetchImage
 {
   # connect to camera stream interface, get image, save image to file
 
-  #my $ua = LWP::UserAgent->new( );
-  #$ua->add_handler("request_send",  sub { shift->dump; return });
-  #$ua->add_handler("response_done", sub { shift->dump; return });
-
-  #$ua->credentials("$camera_addr:$camera_stream_port", $camera_realm, $user, $password_b64);
-
-  #my $cam_image = $ua->get("${url_stream}/stream/snapshot.jpg") or die "Couldn't fetch $url_stream";
-  # $cam_image = $ua->get("${url_stream}/stream/snapshot.jpg") or die "Couldn't fetch $url_stream";
-
+  printDebug("Fetching Image from Camera ${url_stream} to ${snapshotfile}...");
   my $browser = LWP::UserAgent->new;
   my $req =  HTTP::Request->new( GET => "${url_stream}/stream/snapshot.jpg");
   $req->authorization_basic($user, $password_b64);
@@ -288,15 +304,13 @@ sub CamFetchImage
 
   $cam_image->is_success() or die "Error connecting camera ${camera_addr}:${camera_stream_port}: " . $cam_image->message() . " (" .$cam_image->status_line . ")"; 
 
-  #print $cam_image->content();
-
   open(my $fh, '>', $snapshotfile);
   print $fh $cam_image->content();
   close ($fh);
 
+  printDebug("done\n");
+  
   #my $fetchimage = `wget --user=$user --password=$password_b64 ${url_stream}/stream/snapshot.jpg`;
-  #print $fetchimage;
-
 }                    
 
 
@@ -344,12 +358,14 @@ sub CamConnectAdminInterface
 {
   # login as admin if not already done
 
+  my $req;
+
   if ( $connection_token eq "" )
   {
     $browserAdminConnection = LWP::UserAgent->new;
     $browserAdminConnection->cookie_jar( {} ); # use cookies
     
-    my $req = $browserAdminConnection->post( "${url_admin}/login.fcgi",
+    $req = $browserAdminConnection->post( "${url_admin}/login.fcgi",
                                              [ 'Username'=>$user,
                                                'Password'=>$password_b64
                                              ],
@@ -358,7 +374,11 @@ sub CamConnectAdminInterface
     die "Connection Error: ", $req->status_line unless $req->is_success;
   
     my $line = $req->content;
+
+    printDebug($line . "\n");
   
+    # expected: {"errorCode":0, "isAdmin":1, "token":"skfhdskfhksdhfkdhf"}
+    
     if ( ($line =~ m/"errorCode":0,/)
           && ($line =~ m/"isAdmin":1,/) )
     {
@@ -371,10 +391,22 @@ sub CamConnectAdminInterface
       die("Error: Could not login or no admin account\n($line)\n");
     }
 
+
   }
   else
   {
-    # already logged in
+    # already logged in. try heartbeat.
+    
+
+    $req = $browserAdminConnection->post( "${url_admin}/watcherheartbeat.fcgi",
+                                             [ 'token'=>$connection_token
+                                             ],
+                                            );
+  
+    die "Heartbeat Error: ", $req->status_line unless $req->is_success;
+    
+    printDebug("Already connected: " . $req->content . "\n");
+
   }
 
 
@@ -388,14 +420,42 @@ sub CamReadConfig
 
   CamConnectAdminInterface();
 
+  # motion detection settings
   my $req = $browserAdminConnection->post( "${url_admin}/mdconf_get.fcgi" );
   
   die "Error retrieving camera config:\n", $req->status_line unless $req->is_success;
 
-  # {"errorCode":"0","is_enable":"1","precision":"3","area":[0,0,0,0,0,0,0,0,80,0,32,0,80,0,0,0,0,0,0,0,0,0,0,0,0]}  
+  # expected: {"errorCode":"0","is_enable":"1","precision":"3","area":[0,0,0,0,0,0,0,0,80,0,32,0,80,0,0,0,0,0,0,0,0,0,0,0,0]}  
   CamProcessConfig($req->content);
 
-  print $req->content . "\n";
+  printDebug($req->content . "\n");
+
+
+  # daynightmode
+  $req = $browserAdminConnection->post( "${url_admin}/daynightconfsettinginit.fcgi");
+
+  die "Connection Error: ", $req->status_line unless $req->is_success;
+
+  my $line = $req->content;
+
+  printDebug($req->content . "\n");  
+
+
+  # expected: {"errorCode":"0","daynightmode":"3", "daymodestarttime":"390","daymodeendtime":"1080"}
+  if ( ($line =~ m/"errorCode":"0",/)
+        && ($line =~ m/"daynightmode":"(\d)", "daymodestarttime":"(\d+)","daymodeendtime":"(\d+)"/) )
+  {
+    # errorCode ok and daynightmode received
+    $daynightmode = $1;
+    $daymodestarttime = $2;
+    $daymodeendtime = $3;
+  }
+  else
+  {
+    printDebug("Warning: Did not get day/night settings\n($line)\n");
+  }
+
+
 }
 
 
@@ -468,10 +528,12 @@ sub CamSaveConfig
   
   CamConnectAdminInterface();
 
+  # save common data
+
   # translate all separated fields to area codes for sending
   CamCreateAreaInfos();
 
-  print "Saving data...\n";
+  printDebug("Saving data...\n");
   my $req = $browserAdminConnection->post( "${url_admin}/mdconf_set.fcgi",
                          [ 'is_enable'=>$enablemotiondetect,
                            'precision'=>$sensitivity,
@@ -505,10 +567,80 @@ sub CamSaveConfig
   
   die "error: ", $req->status_line unless $req->is_success;
 
-  print $req->content() . "\n";
+  printDebug($req->content() . "\n");
+
+  # save daynight settings
+
+  $req = $browserAdminConnection->post( "${url_admin}/daynightconf.fcgi",
+                         [ 'daynightmode'=>$daynightmode,
+                           'token'=>$connection_token
+                         ], );
+  
+  die "error: ", $req->status_line unless $req->is_success;
+
+  printDebug($req->content() . "\n");
 
 }
 
+
+
+sub CamDisconnect
+{
+
+  if ( $connection_token ne "" )
+  {
+    # logout
+    my $req = $browserAdminConnection->post( "${url_admin}/logout.fcgi",
+                                             [ 'token'=>$connection_token
+                                             ],
+                                            );
+  
+    die "Logout Error: ", $req->status_line unless $req->is_success;
+  
+    my $line = $req->content;
+    
+    printDebug($line . "\n");
+
+    $connection_token = "";
+  }
+
+}
+
+
+
+sub CamReboot
+{
+
+  if ( $connection_token ne "" )
+  {
+    # reboot
+    my $req = $browserAdminConnection->post( "${url_admin}/reboot.fcgi",
+                                             [ 'token'=>$connection_token
+                                             ],
+                                            );
+  
+    die "Reboot Error: ", $req->status_line unless $req->is_success;
+  
+    my $line = $req->content;
+    
+    printDebug($line . "\n");
+
+    $connection_token = "";
+  }
+
+}
+
+
+
+sub printDebug
+{
+  my $line = shift;
+  
+  if ( $debug != 0 )
+  {
+    print STDERR $line;
+  }
+}
 
 
 # old
