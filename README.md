@@ -1,11 +1,15 @@
 # TP-Link NC220
-Some more or less random stuff about TP-Link NC220 IP Camera
+Some more or less random stuff about TP-Link NC220 (and NC200) IP Camera
 
-The TP-Link NC220 and NC200 cameras have a bad support for some browsers especially under linux. Some workarounds and observations will be collected here. It is not necessary to use any cloud service for accessing this camera. My tests are done with the NC220 but there is a good chance that some of these workarounds will work for the NC200 camera, too.
+The TP-Link NC220 and NC200 cameras have a bad support for some browsers especially under linux. Some workarounds and observations will be collected here. It is not necessary to use any cloud service for accessing this camera. All tests here are done with the NC220 but there is a good chance that some of these workarounds will work for the NC200 camera, too.
 
 # Configure
-It is possible to make all configuration settings with any browser except motion detection (special plugin required). 
 The standard username is admin and the password is admin, too. (Can be found under the camera stand.)
+It is possible to make all configuration settings with any browser except motion detection. 
+For configuring motion detection usually a special plugin is needed. This doesn´t work under linux so it was
+necessary to reverse engineer the protocol. The proof of concept configuration tool (written in Perl Tk) 
+can be found in the software folder. Please note: This is only a fast hacked proof of concept, there are still some
+issues to do (especially solve some timing issues).
 
 # Playing Streams
 
@@ -38,12 +42,6 @@ There are a bunch of audio and video sources where you can try to obtain streams
 
 # Getting Still Images
 * wget --user=admin --password=YWRtaW4= http://[ipofcamera]:8080/stream/snapshot.jpg
-
-# Configuring Motion Detection
-For configuring motion detection usually a special plugin is needed. This doesn´t work under linux so it was
-necessary to reverse engineer the protocol. The proof of concept configuration tool (written in Perl Tk) 
-can be found in the software folder. Please note: This is only a fast hacked proof of concept, there are still many
-issues to do (especially solve some timing issues).
 
 # Portscan
 ```
