@@ -287,14 +287,14 @@ Anything interesting here?
 
 ## Flashing modified images
 
-It should be possible to flash your own firmware. But be careful when doing so. There seems to be no way to access the bootloader without destroying the
-case. Your device may be bricked forever!
+It should be possible to flash your own firmware. But be careful when doing so. There seems to be no way to access the bootloader yet. Your device may be bricked forever!
 
 Some oberservations so far:
 
 - Camera checks for file suffix .bin
 - Firmware Name and Timestamp seem not to be checked by the camera before flashing
 
+Can somebody open the camera case safely?
 
 # TP-Link NC200 Firmware Image Layout
 
