@@ -8,7 +8,7 @@ The firmware image (.bin) consists roughly of 4 parts:
 4. dsp_Image
 
 ## 1. Header
-
+```
 - Offset 0x00000000: 4 Bytes, Magic Number 0xfdfdaaaa
 - Offset 0x00000004: 4 Bytes, Timestamp (low byte first)
 - Offset 0x00000008: 4 Bytes, Filesize of complete .bin file (low byte first)
@@ -34,7 +34,7 @@ The firmware image (.bin) consists roughly of 4 parts:
 - Offset 0x000000FC: Here starts the root_Uimage
 - Offset 0x001c84c5 (only valid for NC220_1.0.27_Build_150629_Rel.22346): Here starts the fs_Image
 - Offset 0x0074fa01 (only valid for NC220_1.0.27_Build_150629_Rel.22346): Here starts the dsp_Image
-
+```
 
 
 ### Example: NC220_1.0.27_Build_150629_Rel.22346.bin
@@ -121,9 +121,13 @@ Load Address: 80000000
 Entry Point:  8000c310
 ```
 
-If you remove the uboot header you can uncompress the kernel image with lz.
+If you remove the uboot header you can uncompress the kernel image with lzma:
+```
+dd if=NC220_1.0.27_Build_150629_Rel.22346.bin.kernel.uboot of=NC220_1.0.27_Build_150629_Rel.22346.bin.kernel.lzma bs=1 skip=64
+lzma -d NC220_1.0.27_Build_150629_Rel.22346.bin.kernel.lzma
+```
 
-** Can somebody find the initramfs??? cpio??? **
+**Can somebody find the initramfs??? Something with cpio??? Please report!!!**
 
 ## 3. fs_Image (Filesystem)
 
@@ -297,7 +301,7 @@ Some oberservations so far:
 The NC200 firmware image has a slightly different image layout.
 
 ## 1. Header
-
+```
 - Offset 0x00000000: 4 Bytes, Magic Number 0xfdfdaaaa
 - Offset 0x00000004: 4 Bytes, 0x000000C8 -> 200dez -> Model Name
 - Offset 0x00000008: 4 Bytes, Timestamp (low byte first)
@@ -321,3 +325,4 @@ The NC200 firmware image has a slightly different image layout.
 
 - Offset 0x000000C0: Here starts the root_Uimage
 ...
+```
