@@ -60,7 +60,7 @@ Port 80 is used for configuration interface, streams are served at port 8080. Wh
 # Firmware
 The camera itself runs under linux. Some GPL files can be downloaded at tplink http://www.tp-link.com/en/gpl-code.html?model=NC220 .
 
-An (incomplete) analysis of the firmware image will be released here soon.
+An analysis of the firmware image layout can be found in the firmware folder.
 
 # Contribute
 Please report your investigation results of this device!
