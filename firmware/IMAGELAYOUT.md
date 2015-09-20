@@ -321,7 +321,7 @@ The NC200 firmware image has a slightly different image layout.
 
 - Offset 0x000000A4; 4 Bytes, Position Offset of dsp_Image in this .bin file (low byte first)
 - Offset 0x000000A8: 4 Bytes, File size of dsp_Image (low byte first)
-- Offset 0x000000A8: 20 Bytes, Name of dsp_Image, padded with 0x00 Bytes
+- Offset 0x000000AC: 20 Bytes, Name of dsp_Image, padded with 0x00 Bytes
 
 - Offset 0x000000C0: Here starts the root_Uimage
 ...
