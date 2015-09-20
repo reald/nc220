@@ -13,23 +13,24 @@ The firmware image (.bin) consists roughly of 4 parts:
 - Offset 0x00000004: 4 Bytes, Timestamp (low byte first)
 - Offset 0x00000008: 4 Bytes, Filesize of complete .bin file (low byte first)
 - Offset 0x0000000C: 16 Bytes, MD5(root_Uimage + fs_Image + dsp_Image)
-- Offset 0x0000001C: 68 Bytes, Firmware Name, padded with 0x00 Bytes
+- Offset 0x0000001C: 64 Bytes, Firmware Name, padded with 0x00 Bytes
 
+- Offset 0x0000005C: 4 Bytes, Unknown!!, always 0x00000000 ?
 - Offset 0x00000060: 4 Bytes, Position Offset of root_Uimage in this .bin file (low byte first)
 - Offset 0x00000064: 4 Bytes, File size of root_Uimage (low byte first)
 - Offset 0x00000068: 20 Bytes, Name of root_Uimage, padded with 0x00 Bytes
-- Offset 0x0000007C: 4 Bytes, Unknown!!, here 0x00000001
 
+- Offset 0x0000007C: 4 Bytes, Unknown!!, always 0x00000001 ?
 - Offset 0x00000080; 4 Bytes, Position Offset of fs_Image in this .bin file (low byte first)
 - Offset 0x00000084: 4 Bytes, File size of fs_Image (low byte first)
 - Offset 0x00000088: 20 Bytes, Name of fs_Image, padded with 0x00 Bytes
-- Offset 0x0000009C: 4 Bytes, Unknown!!, here 0x00000002
 
+- Offset 0x0000009C: 4 Bytes, Unknown!!, always 0x00000002 ?
 - Offset 0x000000A0; 4 Bytes, Position Offset of dsp_Image in this .bin file (low byte first)
 - Offset 0x000000A4: 4 Bytes, File size of dsp_Image (low byte first)
 - Offset 0x000000A8: 20 Bytes, Name of dsp_Image, padded with 0x00 Bytes
 
-- Offset 0x000000BC: 68 Bytes, Camera Name, padded with 0x00 Bytes
+- Offset 0x000000BC: 64 Bytes, Camera Name, padded with 0x00 Bytes
 
 - Offset 0x000000FC: Here starts the root_Uimage
 - Offset 0x001c84c5 (only valid for NC220_1.0.27_Build_150629_Rel.22346): Here starts the fs_Image
@@ -307,18 +308,19 @@ The NC200 firmware image has a slightly different image layout.
 - Offset 0x00000008: 4 Bytes, Timestamp (low byte first)
 - Offset 0x0000000C: 4 Bytes, Filesize of complete .bin file (low byte first)
 - Offset 0x00000010: 16 Bytes, MD5(root_Uimage + fs_Image + dsp_Image)
-- Offset 0x00000020: 68 Bytes, Firmware Name, padded with 0x00 Bytes
+- Offset 0x00000020: 64 Bytes, Firmware Name, padded with 0x00 Bytes
 
+- Offset 0x00000060: 4 Bytes, Unknown!!, always 0x00000000 ?
 - Offset 0x00000064: 4 Bytes, Position Offset of root_Uimage in this .bin file (low byte first)
 - Offset 0x00000068: 4 Bytes, File size of root_Uimage (low byte first)
 - Offset 0x0000006C: 20 Bytes, Name of root_Uimage, padded with 0x00 Bytes
-- Offset 0x00000080: 4 Bytes, Unknown!!, here 0x00000001
 
+- Offset 0x00000080: 4 Bytes, Unknown!!, always 0x00000001 ?
 - Offset 0x00000084; 4 Bytes, Position Offset of fs_Image in this .bin file (low byte first)
 - Offset 0x00000088: 4 Bytes, File size of fs_Image (low byte first)
 - Offset 0x0000008C: 20 Bytes, Name of fs_Image, padded with 0x00 Bytes
-- Offset 0x000000A0: 4 Bytes, Unknown!!, here 0x00000002
 
+- Offset 0x000000A0: 4 Bytes, Unknown!!, always 0x00000002 ?
 - Offset 0x000000A4; 4 Bytes, Position Offset of dsp_Image in this .bin file (low byte first)
 - Offset 0x000000A8: 4 Bytes, File size of dsp_Image (low byte first)
 - Offset 0x000000AC: 20 Bytes, Name of dsp_Image, padded with 0x00 Bytes
