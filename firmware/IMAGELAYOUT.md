@@ -70,22 +70,7 @@ The firmware image (.bin) consists roughly of 4 parts:
 
 ### Extracting parts from firmware image
 ```
-$ dd if=NC220_1.0.27_Build_150629_Rel.22346.bin bs=1 skip=0 count=0xfc of=NC220_1.0.27_Build_150629_Rel.22346.bin.header
-$ dd if=NC220_1.0.27_Build_150629_Rel.22346.bin bs=1 skip=0xfc count=0x1c83c9 of=NC220_1.0.27_Build_150629_Rel.22346.bin.kernel.uboot
-$ dd if=NC220_1.0.27_Build_150629_Rel.22346.bin bs=1 skip=0x1c84c5 count=0x58753c of=NC220_1.0.27_Build_150629_Rel.22346.bin.fs
-$ dd if=NC220_1.0.27_Build_150629_Rel.22346.bin bs=1 skip=0x74fa01 count=0x20000 of=NC220_1.0.27_Build_150629_Rel.22346.bin.dsp
-
-$ cat NC220_1.0.27_Build_150629_Rel.22346.bin.kernel.uboot > 3images
-$ cat NC220_1.0.27_Build_150629_Rel.22346.bin.fs >> 3images
-$ cat NC220_1.0.27_Build_150629_Rel.22346.bin.dsp  >> 3images
-
-$ md5sum *
-7559a21eea8fc0148bedc34fa9989875 *3images (Compare to image header!)
-4c4c2abb19a9fbaab1c1587879a05924 *NC220_1.0.27_Build_150629_Rel.22346.bin
-41c9da859016509e21697b68b30023c2 *NC220_1.0.27_Build_150629_Rel.22346.bin.dsp
-3d9acb1366211cee62084b7a074fa066 *NC220_1.0.27_Build_150629_Rel.22346.bin.fs
-83aa510aec555f1bda201298100fb069 *NC220_1.0.27_Build_150629_Rel.22346.bin.header
-f1876e1a1bb25addb15b7d9bd3546294 *NC220_1.0.27_Build_150629_Rel.22346.bin.kernel.uboot
+octave -q chop_firmware_image.m imagefile.bin
 ```
 
 ## 2. root_Uimage (Kernel + ?)
