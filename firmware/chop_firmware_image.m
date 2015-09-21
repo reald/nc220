@@ -14,7 +14,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %
-% Usage: octave -q chop_firmware_image imagefile.bin
+% Usage: octave -q chop_firmware_image.m imagefile.bin
 
 arglist = argv();
 
