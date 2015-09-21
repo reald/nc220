@@ -4,7 +4,7 @@
 # Configure motion detection for tp-link nc220 lan camera.
 # May work for nc200 camera, too.
 #
-# (c) Dennis Real 2015, v0.2
+# (c) Dennis Real 2015, v0.21
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,9 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Known issues:
-# - No connection timeout handling
-# - Timeout issues: - Reading/Writing camera too fast will block you for some minutes
-#                   - Maybe calling cyclic watcherheartbeat.fcgi helps???
+# - Reading/Writing camera too fast (?) might block you for some minutes
 # - Code needs clean up!
 
 use strict;
@@ -163,6 +161,7 @@ $mainWindow->bind('<KeyPress-q>' => sub { exit(0); });
 #GuiDrawLines();
 GuiPlaceFields();
 
+my $cyclicId = $mainWindow->repeat(45*1000, \&CamCallHeartbeat);
                                      
 MainLoop;
 
@@ -354,6 +353,27 @@ sub CamCreateAreaInfos
 
 
 
+sub CamCallHeartbeat
+{
+  my $req;
+
+  if ( $connection_token ne "" )
+  {
+    # admin connection established. keep alive
+    
+    $req = $browserAdminConnection->post( "${url_admin}/watcherheartbeat.fcgi",
+                                           [ 'token'=>$connection_token
+                                           ],
+                                      );
+  
+    die "Heartbeat Error: ", $req->status_line unless $req->is_success;
+    
+    printDebug("Call heartbeat: " . $req->content . "\n");
+  }
+}
+
+
+
 sub CamConnectAdminInterface
 {
   # login as admin if not already done
@@ -396,17 +416,7 @@ sub CamConnectAdminInterface
   else
   {
     # already logged in. try heartbeat.
-    
-
-    $req = $browserAdminConnection->post( "${url_admin}/watcherheartbeat.fcgi",
-                                             [ 'token'=>$connection_token
-                                             ],
-                                            );
-  
-    die "Heartbeat Error: ", $req->status_line unless $req->is_success;
-    
-    printDebug("Already connected: " . $req->content . "\n");
-
+    CamCallHeartbeat();
   }
 
 
