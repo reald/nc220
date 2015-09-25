@@ -60,5 +60,11 @@ The camera itself runs under linux. Some GPL files can be downloaded at tplink h
 
 An analysis of the firmware image layout can be found in the firmware folder.
 
+# Hardware
+Some hardware info and pictures from inside can be found at FCC:
+* https://fccid.io/TE7NC220
+* https://fccid.io/TE7NC200
+
+
 # Contribute
 Please report your investigation results of this device!
