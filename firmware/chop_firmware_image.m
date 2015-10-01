@@ -1,6 +1,6 @@
 % Extract parts of TP-Link NC200/NC220 firmware image
 %
-% (c) Dennis Real 2015, v0.1
+% (c) Dennis Real 2015, v0.11
 %
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -23,8 +23,6 @@ if ( length(arglist) == 0 )
 else
   filename = arglist{1}
 end
-
-image = fileread(filename);
 
 magic = [ 0xaa 0xaa 0xfd 0xfd ];
 ubootmagic = [ 0x27 0x05 0x19 0x56 ];
@@ -233,7 +231,7 @@ end
 % check uboot magic
 if ( sum((image(rootUImagepos+1:rootUImagepos+1 + 4 - 1)-0) != ubootmagic) != 0 )
   disp('Uboot magic check failed');
-%  exit(-1);
+  exit(-1);
 end
 
 % save parts
