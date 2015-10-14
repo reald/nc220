@@ -9,13 +9,13 @@ It is possible to make all configuration settings with any browser except motion
 For configuring motion detection usually a special plugin is needed. This doesn´t work under linux so it was
 necessary to reverse engineer the protocol. The proof of concept configuration tool (written in Perl Tk) 
 can be found in the software folder. Please note: This is only a fast hacked proof of concept, there are still some
-issues to do (especially solve some timing issues).
+issues to do.
 
 # Playing Streams
 
 * Windows: Live view is only possible with special browser plugins. Firefox and IE are working. Chrome does not support Netscape Plugin API any longer ("Meanwhile, NPAPI’s 90s-era architecture has become a leading cause of hangs, crashes, security incidents, and code complexity") so live view is not possible with Chrome.
 
-* Linux: When opening the live view window in your browser a plugin a served for download but it will not work. 
+* Linux: When opening the live view window in your browser a plugin is served for download but it will not work. 
 
 ## Workaround
 There are a bunch of audio and video sources where you can try to obtain streams from. Most of them do not work as expected but there are some working constellations.
@@ -29,7 +29,8 @@ There are a bunch of audio and video sources where you can try to obtain streams
 * http://[ipofcamera]:8080/stream/video/h264_mixed
 * http://[ipofcamera]:8080/stream/video/mjpeg_mixed
 * http://[ipofcamera]:8080/stream/video/h264_previous
-
+* rtsp://admin:admin@[device-ip]:554/h264_vga.sdp
+  * `vlc --started-from-file rtsp://admin:admin@[device-ip]:554/h264_vga.sdp`
 
 ## List of available Audio Sources
 * http://[ipofcamera]:8080/stream/audio/wavpcm
@@ -53,7 +54,7 @@ PORT     STATE SERVICE
 8080/tcp open  http-proxy
 ```
 
-Port 80 is used for configuration interface, streams are served at port 8080. What are the other ports for? Please report your experiences!
+Port 80 is used for configuration interface, streams are served at port 8080 and 554. What are the other ports for? Please report your experiences!
 
 # Firmware
 The camera itself runs under linux. Some GPL files can be downloaded at tplink http://www.tp-link.com/en/gpl-code.html?model=NC220 .
