@@ -31,6 +31,10 @@ There are a bunch of audio and video sources where you can try to obtain streams
 * http://[ipofcamera]:8080/stream/video/h264_previous
 * rtsp://admin:admin@[device-ip]:554/h264_vga.sdp
   * `vlc --started-from-file rtsp://admin:admin@[device-ip]:554/h264_vga.sdp`
+* rtmp://[device-ip]:1935/stream/video/h264
+  * `ffplay rtmp://192.168.1.49:1935/stream/video/h264`
+  * video and audio stream
+  * Works without authentication! (WTF?)
 
 ## List of available Audio Sources
 * http://[ipofcamera]:8080/stream/audio/wavpcm
