@@ -71,5 +71,5 @@ Some hardware info and pictures from inside can be found at FCC:
 * https://fccid.io/TE7NC200
 
 
-# Contribute
-Please report your investigation results of this device!
+# Discontinued
+Don´t have the time to look on this any longer. Feel free to fork and continue.
