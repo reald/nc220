@@ -1,3 +1,6 @@
+# Other TP-Link camera
+[TP-link NC210](nc210.md)
+
 # TP-Link NC220
 Some more or less random stuff about TP-Link NC220 IP Camera
 
