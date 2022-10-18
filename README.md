@@ -26,7 +26,7 @@ There are a bunch of audio and video sources where you can try to obtain streams
 * http://nc220.lan:8080/stream/video/h264
 * http://nc220.lan:8080/stream/video/mjpeg_mixed
 * rtsp://admin:admin@nc220.lan:554/h264_vga.sdp
-  * ~~ `vlc --started-from-file rtsp://admin:admin@nc220.lan:554/h264_vga.sdp` ~~
+  * ~~vlc --started-from-file rtsp://admin:admin@nc220.lan:554/h264_vga.sdp~~
 
 ## List of available Audio Sources
 * http://nc220.lan:8080/stream/audio/wavpcm
